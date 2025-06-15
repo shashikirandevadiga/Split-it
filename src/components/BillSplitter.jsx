@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -89,12 +88,7 @@ const BillSplitter = () => {
   
   const handleCustomTipToggle = (checked) => {
     setIsCustomTip(checked);
-    if (checked) {
-      // If toggled on and tip was 0, reset to 18%
-      if (tipPercentage === 0) {
-        setTipPercentage(18);
-      }
-    } else {
+    if (!checked) {
       // If toggled off, set tip to 0%
       setTipPercentage(0);
     }
