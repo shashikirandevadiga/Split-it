@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { NumberInput } from "@/components/ui/number-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -111,22 +111,24 @@ const BillSplitter = () => {
       <CardContent className="space-y-6">
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">Pre-Tax Amount</label>
-          <Input
-            type="number"
+          <NumberInput
             value={preTaxAmount}
             onChange={(e) => setPreTaxAmount(e.target.value)}
             placeholder="$0.00"
             className="bg-white/10 backdrop-blur-sm border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-2 focus:ring-white/40 transition-all"
+            min={0}
+            step={0.01}
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">Number of Ways to Split</label>
-          <Input
-            type="number"
+          <NumberInput
             value={splitWays}
             onChange={(e) => setSplitWays(e.target.value)}
             placeholder="Enter number of people"
             className="bg-white/10 backdrop-blur-sm border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-2 focus:ring-white/40 transition-all"
+            min={1}
+            step={1}
           />
         </div>
         <div>
