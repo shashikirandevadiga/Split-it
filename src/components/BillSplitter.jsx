@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
+import { useToast } from "@/components/ui/use-toast";
 
 const stateTaxRates = {
   'AL': 0.04, 'AK': 0.00, 'AZ': 0.056, 'AR': 0.065, 'CA': 0.0725, 'CO': 0.029, 'CT': 0.0635,
@@ -37,6 +39,7 @@ const BillSplitter = () => {
   const [result, setResult] = useState(0);
   const [userState, setUserState] = useState('');
   const [taxRate, setTaxRate] = useState(0);
+  const { toast } = useToast();
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -44,22 +47,60 @@ const BillSplitter = () => {
         const { latitude, longitude } = position.coords;
         try {
           const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+          if (!response.ok) {
+            throw new Error(`API request failed: ${response.statusText}`);
+          }
           const data = await response.json();
-          const state = data.principalSubdivisionCode.split('-')[1];
-          if (state in stateTaxRates) {
-            setUserState(state);
-            setTaxRate(stateTaxRates[state]);
+          
+          if (data && typeof data.principalSubdivisionCode === 'string' && data.principalSubdivisionCode.includes('-')) {
+            const stateCode = data.principalSubdivisionCode.split('-')[1];
+            if (stateCode in stateTaxRates) {
+              setUserState(stateCode);
+              setTaxRate(stateTaxRates[stateCode]);
+              toast({
+                title: "Location Detected",
+                description: `Your state has been set to ${stateNames[stateCode]}.`,
+              });
+            } else {
+              console.warn(`State code '${stateCode}' from location API is not in our list.`);
+              toast({
+                variant: "destructive",
+                title: "Location Error",
+                description: "We couldn't match your detected state. Please select it manually.",
+              });
+            }
+          } else {
+            console.warn("Could not determine state from geolocation API response:", data);
+            toast({
+              variant: "destructive",
+              title: "Location Error",
+              description: "Could not determine your state from location data. Please select it manually.",
+            });
           }
         } catch (error) {
-          console.error("Error fetching location data:", error);
+          console.error("Error fetching or processing location data:", error);
+          toast({
+            variant: "destructive",
+            title: "Location Service Error",
+            description: "There was a problem fetching your location. Please select your state manually.",
+          });
         }
       }, (error) => {
         console.error("Error getting geolocation:", error);
+        toast({
+          variant: "destructive",
+          title: "Geolocation Disabled",
+          description: "Please enable location services in your browser or select a state manually.",
+        });
       });
     } else {
       console.log("Geolocation is not supported by this browser.");
+      toast({
+        title: "Geolocation Not Supported",
+        description: "Please select your state manually as your browser doesn't support geolocation.",
+      });
     }
-  }, []);
+  }, [toast]);
 
   const handleStateChange = (state) => {
     setUserState(state);
