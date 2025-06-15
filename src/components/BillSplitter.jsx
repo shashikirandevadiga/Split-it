@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -33,7 +34,7 @@ const BillSplitter = () => {
   const [preTaxAmount, setPreTaxAmount] = useState('');
   const [splitWays, setSplitWays] = useState('');
   const [tipPercentage, setTipPercentage] = useState(18);
-  const [isCustomTip, setIsCustomTip] = useState(false);
+  const [isCustomTip, setIsCustomTip] = useState(true); // Default to ON
   const [result, setResult] = useState(0);
   const [userState, setUserState] = useState('');
   const [taxRate, setTaxRate] = useState(0);
@@ -88,8 +89,23 @@ const BillSplitter = () => {
   
   const handleCustomTipToggle = (checked) => {
     setIsCustomTip(checked);
-    if (!checked) {
-      setTipPercentage(18); // Reset to default when toggled off
+    if (checked) {
+      // If toggled on and tip was 0, reset to 18%
+      if (tipPercentage === 0) {
+        setTipPercentage(18);
+      }
+    } else {
+      // If toggled off, set tip to 0%
+      setTipPercentage(0);
+    }
+  };
+
+  const handleTipSliderChange = (value) => {
+    const newTip = value[0];
+    setTipPercentage(newTip);
+    // If the user interacts with the slider, ensure the toggle is on.
+    if (!isCustomTip) {
+      setIsCustomTip(true);
     }
   };
 
@@ -135,7 +151,7 @@ const BillSplitter = () => {
         <div>
           <div className="flex items-center justify-between mb-2">
             <label htmlFor="custom-tip-switch" className="text-sm font-medium text-white/80">
-              Tip Percentage ({isCustomTip ? `${tipPercentage}%` : '18%'})
+              Tip Percentage ({tipPercentage}%)
             </label>
             <Switch
               id="custom-tip-switch"
@@ -143,16 +159,14 @@ const BillSplitter = () => {
               onCheckedChange={handleCustomTipToggle}
             />
           </div>
-          {isCustomTip && (
-            <div className="pt-2">
-              <Slider
-                value={[tipPercentage]}
-                onValueChange={(value) => setTipPercentage(value[0])}
-                max={50}
-                step={1}
-              />
-            </div>
-          )}
+          <div className="pt-2">
+            <Slider
+              value={[tipPercentage]}
+              onValueChange={handleTipSliderChange}
+              max={50}
+              step={1}
+            />
+          </div>
         </div>
         <div className="text-center pt-4 border-t border-white/20">
           <h3 className="text-lg font-semibold text-white/90">Each Person Owes:</h3>
