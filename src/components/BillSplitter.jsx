@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -136,9 +135,9 @@ const BillSplitter = () => {
             <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white/90 focus:bg-white/20 focus:ring-2 focus:ring-white/40 transition-all">
               <SelectValue placeholder="Select a state" />
             </SelectTrigger>
-            <SelectContent className="backdrop-blur-2xl bg-black/60 border-white/20 text-white">
+            <SelectContent>
               {Object.entries(stateNames).sort((a, b) => a[1].localeCompare(b[1])).map(([code, name]) => (
-                <SelectItem key={code} value={code} className="focus:bg-white/20">{name}</SelectItem>
+                <SelectItem key={code} value={code}>{name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -176,4 +175,3 @@ const BillSplitter = () => {
 };
 
 export default BillSplitter;
-
