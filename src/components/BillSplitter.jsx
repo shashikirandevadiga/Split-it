@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
 
 const stateTaxRates = {
   'AL': 0.04, 'AK': 0.00, 'AZ': 0.056, 'AR': 0.065, 'CA': 0.0725, 'CO': 0.029, 'CT': 0.0635,
@@ -32,8 +32,8 @@ const stateNames = {
 const BillSplitter = () => {
   const [preTaxAmount, setPreTaxAmount] = useState('');
   const [splitWays, setSplitWays] = useState('');
-  const [tipPercentage, setTipPercentage] = useState(15);
-  const [customTip, setCustomTip] = useState('');
+  const [tipPercentage, setTipPercentage] = useState(18);
+  const [isCustomTip, setIsCustomTip] = useState(false);
   const [result, setResult] = useState(0);
   const [userState, setUserState] = useState('');
   const [taxRate, setTaxRate] = useState(0);
@@ -69,15 +69,14 @@ const BillSplitter = () => {
   const calculateSplit = () => {
     const amount = parseFloat(preTaxAmount);
     const people = parseInt(splitWays);
-    const tip = tipPercentage === 'custom' ? parseFloat(customTip) : tipPercentage;
     
-    if (isNaN(amount) || isNaN(people) || people <= 0 || isNaN(tip)) {
+    if (isNaN(amount) || isNaN(people) || people <= 0) {
       setResult(0);
       return;
     }
 
     const totalWithTax = amount * (1 + taxRate);
-    const totalWithTip = totalWithTax + ( (tip/100) * amount);
+    const totalWithTip = totalWithTax + ( (tipPercentage/100) * amount);
     const perPerson = totalWithTip / people;
 
     setResult(perPerson.toFixed(2));
@@ -85,7 +84,14 @@ const BillSplitter = () => {
 
   useEffect(() => {
     calculateSplit();
-  }, [preTaxAmount, splitWays, tipPercentage, customTip, taxRate]);
+  }, [preTaxAmount, splitWays, tipPercentage, taxRate]);
+  
+  const handleCustomTipToggle = (checked) => {
+    setIsCustomTip(checked);
+    if (!checked) {
+      setTipPercentage(18); // Reset to default when toggled off
+    }
+  };
 
   return (
     <Card className="w-full max-w-md mx-auto bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-2xl text-white">
@@ -127,38 +133,25 @@ const BillSplitter = () => {
           </Select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">Tip Percentage</label>
-          <ToggleGroup 
-            type="single" 
-            value={String(tipPercentage)}
-            onValueChange={(value) => {
-              if (value) {
-                if (value === 'custom') {
-                  setTipPercentage('custom');
-                } else {
-                  setTipPercentage(parseFloat(value));
-                }
-              }
-            }}
-            className="grid grid-cols-5 gap-2"
-          >
-            {[15, 18, 20, 25].map((tip) => (
-              <ToggleGroupItem key={tip} value={String(tip)} aria-label={`${tip}% tip`} className="bg-white/10 text-white/80 border-white/20 rounded-md hover:bg-white/20 data-[state=on]:bg-white/30 data-[state=on]:text-white transition-colors">
-                {tip}%
-              </ToggleGroupItem>
-            ))}
-            <ToggleGroupItem value="custom" aria-label="Custom tip" className="bg-white/10 text-white/80 border-white/20 rounded-md hover:bg-white/20 data-[state=on]:bg-white/30 data-[state=on]:text-white transition-colors">
-              Custom
-            </ToggleGroupItem>
-          </ToggleGroup>
-          {tipPercentage === 'custom' && (
-            <Input
-              type="number"
-              value={customTip}
-              onChange={(e) => setCustomTip(e.target.value)}
-              placeholder="Enter custom tip %"
-              className="mt-2 bg-white/10 border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-white/50 transition-colors"
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="custom-tip-switch" className="text-sm font-medium text-white/80">
+              Tip Percentage ({isCustomTip ? `${tipPercentage}%` : '18%'})
+            </label>
+            <Switch
+              id="custom-tip-switch"
+              checked={isCustomTip}
+              onCheckedChange={handleCustomTipToggle}
             />
+          </div>
+          {isCustomTip && (
+            <div className="pt-2">
+              <Slider
+                value={[tipPercentage]}
+                onValueChange={(value) => setTipPercentage(value[0])}
+                max={50}
+                step={1}
+              />
+            </div>
           )}
         </div>
         <div className="text-center pt-4 border-t border-white/20">
