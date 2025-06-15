@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -116,7 +117,7 @@ const BillSplitter = () => {
             value={preTaxAmount}
             onChange={(e) => setPreTaxAmount(e.target.value)}
             placeholder="$0.00"
-            className="bg-white/10 border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-white/50 transition-colors"
+            className="bg-white/10 backdrop-blur-sm border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-2 focus:ring-white/40 transition-all"
           />
         </div>
         <div>
@@ -126,13 +127,13 @@ const BillSplitter = () => {
             value={splitWays}
             onChange={(e) => setSplitWays(e.target.value)}
             placeholder="Enter number of people"
-            className="bg-white/10 border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-white/50 transition-colors"
+            className="bg-white/10 backdrop-blur-sm border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-2 focus:ring-white/40 transition-all"
           />
         </div>
         <div>
           <label className="block text-sm font-medium text-white/80 mb-2">State</label>
           <Select value={userState} onValueChange={handleStateChange}>
-            <SelectTrigger className="bg-white/10 border-white/20 text-white/90">
+            <SelectTrigger className="bg-white/10 backdrop-blur-sm border-white/20 text-white/90 focus:bg-white/20 focus:ring-2 focus:ring-white/40 transition-all">
               <SelectValue placeholder="Select a state" />
             </SelectTrigger>
             <SelectContent className="backdrop-blur-2xl bg-black/60 border-white/20 text-white">
@@ -175,3 +176,4 @@ const BillSplitter = () => {
 };
 
 export default BillSplitter;
+
