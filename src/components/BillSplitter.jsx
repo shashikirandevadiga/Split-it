@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -34,8 +33,8 @@ const stateNames = {
 const BillSplitter = () => {
   const [preTaxAmount, setPreTaxAmount] = useState('');
   const [splitWays, setSplitWays] = useState('');
-  const [tipPercentage, setTipPercentage] = useState(18);
-  const [isCustomTip, setIsCustomTip] = useState(true); // Default to ON
+  const [tipPercentage, setTipPercentage] = useState(0);
+  const [isCustomTip, setIsCustomTip] = useState(false); 
   const [result, setResult] = useState(0);
   const [userState, setUserState] = useState('');
   const [taxRate, setTaxRate] = useState(0);
