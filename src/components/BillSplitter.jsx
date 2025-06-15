@@ -146,7 +146,7 @@ const BillSplitter = () => {
   return (
     <Card className="w-full max-w-md mx-auto bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-2xl text-white">
       <CardHeader>
-        <CardTitle className="text-3xl font-bold text-center text-white">Simple Bill Splitter</CardTitle>
+        <CardTitle className="text-3xl font-bold text-center text-white">Split It</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
