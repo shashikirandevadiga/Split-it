@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -87,56 +88,66 @@ const BillSplitter = () => {
   }, [preTaxAmount, splitWays, tipPercentage, customTip, taxRate]);
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full max-w-md mx-auto bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-2xl text-white">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">Simple Bill Splitter</CardTitle>
+        <CardTitle className="text-3xl font-bold text-center text-white">Simple Bill Splitter</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Pre-Tax Amount</label>
+          <label className="block text-sm font-medium text-white/80 mb-2">Pre-Tax Amount</label>
           <Input
             type="number"
             value={preTaxAmount}
             onChange={(e) => setPreTaxAmount(e.target.value)}
             placeholder="$0.00"
+            className="bg-white/10 border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-white/50 transition-colors"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Number of Ways to Split</label>
+          <label className="block text-sm font-medium text-white/80 mb-2">Number of Ways to Split</label>
           <Input
             type="number"
             value={splitWays}
             onChange={(e) => setSplitWays(e.target.value)}
             placeholder="Enter number of people"
+            className="bg-white/10 border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-white/50 transition-colors"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+          <label className="block text-sm font-medium text-white/80 mb-2">State</label>
           <Select value={userState} onValueChange={handleStateChange}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-white/10 border-white/20 text-white/90">
               <SelectValue placeholder="Select a state" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="backdrop-blur-2xl bg-black/60 border-white/20 text-white">
               {Object.entries(stateNames).sort((a, b) => a[1].localeCompare(b[1])).map(([code, name]) => (
-                <SelectItem key={code} value={code}>{name}</SelectItem>
+                <SelectItem key={code} value={code} className="focus:bg-white/20">{name}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Tip Percentage</label>
+          <label className="block text-sm font-medium text-white/80 mb-2">Tip Percentage</label>
           <ToggleGroup 
             type="single" 
-            value={tipPercentage} 
-            onValueChange={(value) => setTipPercentage(value || tipPercentage)}
-            className="bg-gray-300"
+            value={String(tipPercentage)}
+            onValueChange={(value) => {
+              if (value) {
+                if (value === 'custom') {
+                  setTipPercentage('custom');
+                } else {
+                  setTipPercentage(parseFloat(value));
+                }
+              }
+            }}
+            className="grid grid-cols-5 gap-2"
           >
             {[15, 18, 20, 25].map((tip) => (
-              <ToggleGroupItem key={tip} value={tip} aria-label={`${tip}% tip`} className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+              <ToggleGroupItem key={tip} value={String(tip)} aria-label={`${tip}% tip`} className="bg-white/10 text-white/80 border-white/20 rounded-md hover:bg-white/20 data-[state=on]:bg-white/30 data-[state=on]:text-white transition-colors">
                 {tip}%
               </ToggleGroupItem>
             ))}
-            <ToggleGroupItem value="custom" aria-label="Custom tip" className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+            <ToggleGroupItem value="custom" aria-label="Custom tip" className="bg-white/10 text-white/80 border-white/20 rounded-md hover:bg-white/20 data-[state=on]:bg-white/30 data-[state=on]:text-white transition-colors">
               Custom
             </ToggleGroupItem>
           </ToggleGroup>
@@ -146,14 +157,14 @@ const BillSplitter = () => {
               value={customTip}
               onChange={(e) => setCustomTip(e.target.value)}
               placeholder="Enter custom tip %"
-              className="mt-2"
+              className="mt-2 bg-white/10 border-white/20 placeholder:text-white/50 focus:bg-white/20 focus:ring-white/50 transition-colors"
             />
           )}
         </div>
-        <div className="text-center">
-          <h3 className="text-lg font-semibold">Each Person Owes:</h3>
-          <p className="text-3xl font-bold">${result}</p>
-          <p className="text-sm mt-2">
+        <div className="text-center pt-4 border-t border-white/20">
+          <h3 className="text-lg font-semibold text-white/90">Each Person Owes:</h3>
+          <p className="text-4xl font-bold text-white tracking-tight">${result}</p>
+          <p className="text-sm mt-2 text-white/70">
             Selected State: {userState ? stateNames[userState] : 'N/A'} | Tax Rate: {(taxRate * 100).toFixed(3)}%
           </p>
         </div>
